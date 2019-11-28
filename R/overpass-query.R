@@ -17,12 +17,7 @@ overpass_status <- function (quiet=FALSE)
 
     status_url <- gsub ('interpreter', st_type, overpass_url)
 
-    if (!curl::has_internet ())
-    {
-        status <- 'No internet connection'      # nocov
-        if (!quiet) message (status)            # nocov
-    } else
-    {
+   
         status <- httr::RETRY ("GET", status_url, timeout = 100,
                                times = 10)
         if (!is.null (status))
@@ -43,7 +38,7 @@ overpass_status <- function (quiet=FALSE)
             slot_time <- lubridate::force_tz (slot_time, tz = Sys.timezone ())
             # nocov end
         }
-    }
+    
 
     return (invisible (list (available = available, next_slot = slot_time,
                              msg = status)))
@@ -157,9 +152,7 @@ overpass_query <- function (query, quiet = FALSE, wait = TRUE, pad_wait = 5,
         pad_wait <- 5
     }
 
-    if (!curl::has_internet ())
-        stop ('Overpass query unavailable without internet',    # nocov
-              call. = FALSE)                                    # nocov
+                                   # nocov
 
     if (!quiet) message('Issuing query to Overpass API ...')
 
