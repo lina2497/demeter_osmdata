@@ -14,12 +14,15 @@
 available_features <- function() {
 
     url_ftrs <- "http://wiki.openstreetmap.org/wiki/Map_Features"
-
+    if (curl::has_internet ())
+    {
         pg <- xml2::read_html (httr::GET (url_ftrs))
         keys <- xml2::xml_attr (rvest::html_nodes (pg, "a[href^='/wiki/Key']"), #nolint
                                 "title")
         unique (sort (gsub ("^Key:", "", keys)))
-
+    } else {
+        message ("No internet connection")
+    }
 }
 
 #' List tags associated with a feature
@@ -40,7 +43,8 @@ available_features <- function() {
 available_tags <- function(feature) {
     url_ftrs <- "http://wiki.openstreetmap.org/wiki/Map_Features"
 
-
+    if (curl::has_internet ())
+    {
         if (missing (feature))
             stop ("Please specify feature")
 
@@ -53,5 +57,7 @@ available_tags <- function(feature) {
         tags <- vapply (strsplit (xml2::xml_attr (tags, "href"), "%3D"),
                         function (i) i [2], character (1))
         unique (sort (tags))
-
+    } else {
+        message ("No internet connection")
+    }
 }
